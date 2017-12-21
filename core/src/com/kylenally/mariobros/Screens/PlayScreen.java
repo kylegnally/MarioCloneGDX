@@ -21,6 +21,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kylenally.mariobros.MarioBros;
 import com.kylenally.mariobros.Scenes.Hud;
+import com.kylenally.mariobros.Sprites.Mario;
 
 /**
  * Created by kyleg on 12/19/2017.
@@ -35,6 +36,7 @@ public class PlayScreen implements Screen {
     private TmxMapLoader mapLoader;
     private TiledMap map;
     private OrthogonalTiledMapRenderer renderer;
+    private Mario player;
 
     private World world;
     private Box2DDebugRenderer b2dr;
@@ -47,7 +49,8 @@ public class PlayScreen implements Screen {
         gameCam = new OrthographicCamera();
 
         // create a viewport and fit the camera to the viewport height and width
-        gamePort = new FitViewport(MarioBros.V_WIDTH, MarioBros.V_HEIGHT, gameCam);
+        gamePort = new FitViewport(MarioBros.V_WIDTH / MarioBros.PPM,
+                MarioBros.V_HEIGHT / MarioBros.PPM, gameCam);
 
         // create a new HUD
         hud =  new Hud(game.batch);
@@ -60,14 +63,19 @@ public class PlayScreen implements Screen {
 
         // render the map with an instance of the renderer, passing it
         // our map
-        renderer = new OrthogonalTiledMapRenderer(map);
+        renderer = new OrthogonalTiledMapRenderer(map, 1 / MarioBros.PPM);
+
+        // create the world
+        world = new World(new Vector2(0, -10), true);
+        b2dr = new Box2DDebugRenderer();
+
+        // create Mario
+        player = new Mario(world);
 
         // center the camera on the viewport at z height 0
         gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
 
         // create the world
-        world = new World(new Vector2(0, 0), true);
-        b2dr = new Box2DDebugRenderer();
 
         BodyDef bdef = new BodyDef();
         PolygonShape shape = new PolygonShape();
@@ -78,7 +86,8 @@ public class PlayScreen implements Screen {
         for (MapObject object : map.getLayers().get(2).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
             bdef.type = BodyDef.BodyType.StaticBody;
-            bdef.position.set(rect.getX() + rect.getWidth() / 2, rect.getY() + rect.getHeight() / 2);
+            bdef.position.set((rect.getX() + rect.getWidth() / 2) / MarioBros.PPM,
+                    (rect.getY() + rect.getHeight() / 2) / MarioBros.PPM);
             body = world.createBody(bdef);
 
             shape.setAsBox(rect.getWidth() / 2, rect.getHeight() / 2);
@@ -90,7 +99,8 @@ public class PlayScreen implements Screen {
         for (MapObject object : map.getLayers().get(3).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
             bdef.type = BodyDef.BodyType.StaticBody;
-            bdef.position.set(rect.getX() + rect.getWidth() / 2, rect.getY() + rect.getHeight() / 2);
+            bdef.position.set((rect.getX() + rect.getWidth() / 2) / MarioBros.PPM,
+                    (rect.getY() + rect.getHeight() / 2) / MarioBros.PPM);
             body = world.createBody(bdef);
 
             shape.setAsBox(rect.getWidth() / 2, rect.getHeight() / 2);
@@ -102,7 +112,8 @@ public class PlayScreen implements Screen {
         for (MapObject object : map.getLayers().get(5).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
             bdef.type = BodyDef.BodyType.StaticBody;
-            bdef.position.set(rect.getX() + rect.getWidth() / 2, rect.getY() + rect.getHeight() / 2);
+            bdef.position.set((rect.getX() + rect.getWidth() / 2) / MarioBros.PPM,
+                    (rect.getY() + rect.getHeight() / 2) / MarioBros.PPM);
             body = world.createBody(bdef);
 
             shape.setAsBox(rect.getWidth() / 2, rect.getHeight() / 2);
@@ -114,7 +125,8 @@ public class PlayScreen implements Screen {
         for (MapObject object : map.getLayers().get(4).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
             bdef.type = BodyDef.BodyType.StaticBody;
-            bdef.position.set(rect.getX() + rect.getWidth() / 2, rect.getY() + rect.getHeight() / 2);
+            bdef.position.set((rect.getX() + rect.getWidth() / 2) / MarioBros.PPM,
+                    (rect.getY() + rect.getHeight() / 2) / MarioBros.PPM);
             body = world.createBody(bdef);
 
             shape.setAsBox(rect.getWidth() / 2, rect.getHeight() / 2);
@@ -171,12 +183,15 @@ public class PlayScreen implements Screen {
         }
         gameCam.update();
 
-
     }
 
     public void update(float dt) {
 
         handleInput(dt);
+
+        world.step(1/60f, 6, 2);
+        gameCam.update();
+        renderer.setView(gameCam);
 
     }
 
