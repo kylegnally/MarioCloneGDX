@@ -1,6 +1,7 @@
 package com.kylenally.mariobros.Screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -90,7 +91,7 @@ public class PlayScreen implements Screen {
                     (rect.getY() + rect.getHeight() / 2) / MarioBros.PPM);
             body = world.createBody(bdef);
 
-            shape.setAsBox(rect.getWidth() / 2, rect.getHeight() / 2);
+            shape.setAsBox(rect.getWidth() / 2 / MarioBros.PPM, rect.getHeight() / 2 / MarioBros.PPM);
             fdef.shape = shape;
             body.createFixture(fdef);
         }
@@ -103,7 +104,7 @@ public class PlayScreen implements Screen {
                     (rect.getY() + rect.getHeight() / 2) / MarioBros.PPM);
             body = world.createBody(bdef);
 
-            shape.setAsBox(rect.getWidth() / 2, rect.getHeight() / 2);
+            shape.setAsBox(rect.getWidth() / 2 / MarioBros.PPM, rect.getHeight() / 2 / MarioBros.PPM);
             fdef.shape = shape;
             body.createFixture(fdef);
         }
@@ -116,7 +117,7 @@ public class PlayScreen implements Screen {
                     (rect.getY() + rect.getHeight() / 2) / MarioBros.PPM);
             body = world.createBody(bdef);
 
-            shape.setAsBox(rect.getWidth() / 2, rect.getHeight() / 2);
+            shape.setAsBox(rect.getWidth() / 2 / MarioBros.PPM, rect.getHeight() / 2 / MarioBros.PPM);
             fdef.shape = shape;
             body.createFixture(fdef);
         }
@@ -129,7 +130,7 @@ public class PlayScreen implements Screen {
                     (rect.getY() + rect.getHeight() / 2) / MarioBros.PPM);
             body = world.createBody(bdef);
 
-            shape.setAsBox(rect.getWidth() / 2, rect.getHeight() / 2);
+            shape.setAsBox(rect.getWidth() / 2 / MarioBros.PPM, rect.getHeight() / 2 / MarioBros.PPM);
             fdef.shape = shape;
             body.createFixture(fdef);
         }
@@ -176,20 +177,31 @@ public class PlayScreen implements Screen {
 
     public void handleInput(float dt) {
 
-        // if an input is touched, move the camera by 100 units multiplied
-        // by the delta value
-        if (Gdx.input.isTouched()) {
-            gameCam.position.x += 100 * dt;
+        // check for key presses and apply a linear impulse. .isKeyJustPressed
+        // allows us to have a jump that's NOT flying (ie constant velocity)
+        if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+            player.b2Body.applyLinearImpulse(new Vector2(0, 4f), player.b2Body.getWorldCenter(), true);
         }
-        gameCam.update();
 
+        // the next two look for a key that is being held down and applies the motion during the
+        // time the player holds the key (yes, you can use DPAD here as well)
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2Body.getLinearVelocity().x <= 2) {
+            player.b2Body.applyLinearImpulse(new Vector2(0.1f, 0), player.b2Body.getWorldCenter(), true);
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2Body.getLinearVelocity().x >= -2) {
+            player.b2Body.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2Body.getWorldCenter(), true);
+        }
     }
 
     public void update(float dt) {
 
         handleInput(dt);
 
+        // these control CPU/physics updating per screen update
         world.step(1/60f, 6, 2);
+
+        gameCam.position.x = player.b2Body.getPosition().x;
         gameCam.update();
         renderer.setView(gameCam);
 

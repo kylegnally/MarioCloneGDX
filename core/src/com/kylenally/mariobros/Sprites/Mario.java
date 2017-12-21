@@ -18,14 +18,13 @@ public class Mario extends Sprite {
     public Body b2Body;
 
     public Mario(World world) {
-
         this.world = world;
         defineMario();
-
     }
 
+    // method to define Mario and his collision position, size, what shape
+    // to use when colliding, and creating his fixture
     public void defineMario() {
-
         BodyDef bdef = new BodyDef();
         bdef.position.set(32 / MarioBros.PPM, 32 / MarioBros.PPM);
         bdef.type = BodyDef.BodyType.DynamicBody;
@@ -37,7 +36,5 @@ public class Mario extends Sprite {
 
         fdef.shape = shape;
         b2Body.createFixture(fdef);
-
     }
-
 }

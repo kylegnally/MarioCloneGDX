@@ -31,6 +31,8 @@ public class Hud {
     Label worldLabel;
     Label marioLabel;
 
+    // create the HUD and labels, and apply them to a table that we will add to the stage on top
+    // of the play area, formatted as a table
     public Hud(SpriteBatch sb) {
         worldTimer = 300;
         timeCount = 0;
