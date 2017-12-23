@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kylenally.mariobros.MarioBros;
@@ -15,7 +16,7 @@ import com.kylenally.mariobros.MarioBros;
  * Created by kyleg on 12/19/2017.
  */
 
-public class Hud {
+public class Hud implements Disposable {
 
     public Stage stage;
     public Viewport viewport;
@@ -30,6 +31,11 @@ public class Hud {
     Label levelLabel;
     Label worldLabel;
     Label marioLabel;
+
+    @Override
+    public void dispose() {
+        stage.dispose();
+    }
 
     // create the HUD and labels, and apply them to a table that we will add to the stage on top
     // of the play area, formatted as a table
@@ -62,7 +68,5 @@ public class Hud {
         stage.addActor(table);
 
     }
-
-
 
 }
