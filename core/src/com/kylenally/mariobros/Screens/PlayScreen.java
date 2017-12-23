@@ -5,6 +5,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -36,8 +38,11 @@ public class PlayScreen implements Screen {
     private World world;
     private Box2DDebugRenderer b2dr;
 
+    private TextureAtlas atlas;
+
     public PlayScreen(MarioBros game) {
 
+        atlas = new TextureAtlas("Mario_and_enemies.pack");
         this.game = game;
 
         // create a camera
@@ -65,7 +70,7 @@ public class PlayScreen implements Screen {
         b2dr = new Box2DDebugRenderer();
 
         // create Mario
-        player = new Mario(world);
+        player = new Mario(world, this);
 
         // center the camera on the viewport at z height 0
         gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
@@ -77,6 +82,10 @@ public class PlayScreen implements Screen {
         // apply the gameport
         gamePort.apply();
 
+    }
+
+    public TextureAtlas getAtlas() {
+        return atlas;
     }
 
     @Override
@@ -104,6 +113,11 @@ public class PlayScreen implements Screen {
 
         // render the box2d lines
         b2dr.render(world, gameCam.combined);
+
+        game.batch.setProjectionMatrix(gameCam.combined);
+        game.batch.begin();
+        player.draw(game.batch);
+        game.batch.end();
 
         // project the hud and the stage through the camera and combine them
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
@@ -140,8 +154,16 @@ public class PlayScreen implements Screen {
         // these control CPU/physics updating per screen update
         world.step(1/60f, 6, 2);
 
+        // update the player
+        player.update(dt);
+
+        // set the camera to the position of the player
         gameCam.position.x = player.b2Body.getPosition().x;
+
+        // update the camera
         gameCam.update();
+
+        // set the view of the renderer on the camera
         renderer.setView(gameCam);
 
     }
@@ -170,6 +192,8 @@ public class PlayScreen implements Screen {
 
     @Override
     public void dispose() {
+
+        // clean things up
         map.dispose();
         renderer.dispose();
         world.dispose();
