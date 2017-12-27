@@ -19,6 +19,7 @@ import com.kylenally.mariobros.MarioBros;
 import com.kylenally.mariobros.Scenes.Hud;
 import com.kylenally.mariobros.Sprites.Mario;
 import com.kylenally.mariobros.Tools.B2WorldCreator;
+import com.kylenally.mariobros.Tools.WorldContactListener;
 
 /**
  * Created by kyleg on 12/19/2017.
@@ -76,11 +77,12 @@ public class PlayScreen implements Screen {
         gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
 
         // create the world
-
         new B2WorldCreator(world, map);
 
         // apply the gameport
         gamePort.apply();
+
+        world.setContactListener(new WorldContactListener());
 
     }
 
