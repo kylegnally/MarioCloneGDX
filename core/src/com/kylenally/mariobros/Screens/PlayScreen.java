@@ -5,7 +5,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -66,21 +65,17 @@ public class PlayScreen implements Screen {
         // our map
         renderer = new OrthogonalTiledMapRenderer(map, 1 / MarioBros.PPM);
 
-        // create the world
-        world = new World(new Vector2(0, -10), true);
-        b2dr = new Box2DDebugRenderer();
-
-        // create Mario
-        player = new Mario(world, this);
-
         // center the camera on the viewport at z height 0
         gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
 
         // create the world
-        new B2WorldCreator(world, map);
+        world = new World(new Vector2(0, -10), true);
+        b2dr = new Box2DDebugRenderer();
 
-        // apply the gameport
-        gamePort.apply();
+        // create the world
+        new B2WorldCreator(world, map);
+        // create Mario
+        player = new Mario(world, this);
 
         world.setContactListener(new WorldContactListener());
 
@@ -100,10 +95,10 @@ public class PlayScreen implements Screen {
 
         // call the update method and pass it the delta
         update(delta);
-
-        // set the view of the renderer to the camera
-        renderer.setView(gameCam);
-
+//
+//        // set the view of the renderer to the camera
+//        renderer.setView(gameCam);
+//
         // color and alpha
         Gdx.gl.glClearColor(0, 0, 0, 1);
 
@@ -158,6 +153,9 @@ public class PlayScreen implements Screen {
 
         // update the player
         player.update(dt);
+
+        // update the time
+        hud.update(dt);
 
         // set the camera to the position of the player
         gameCam.position.x = player.b2Body.getPosition().x;
