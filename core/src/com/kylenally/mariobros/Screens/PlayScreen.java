@@ -3,6 +3,7 @@ package com.kylenally.mariobros.Screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -26,19 +27,31 @@ import com.kylenally.mariobros.Tools.WorldContactListener;
 
 public class PlayScreen implements Screen {
 
+    // Reference to our game (used to set screens)
     private MarioBros game;
+    private TextureAtlas atlas;
+    public static boolean alreadyDestroyed = false;
+
+    // playscreen vars
     private OrthographicCamera gameCam;
     private Viewport gamePort;
     private Hud hud;
+
+    // tiles map vars
     private TmxMapLoader mapLoader;
     private TiledMap map;
     private OrthogonalTiledMapRenderer renderer;
+
+    // sprites
     private Mario player;
 
+    // music variable
+    private Music music;
+
+    // box2D vars
     private World world;
     private Box2DDebugRenderer b2dr;
 
-    private TextureAtlas atlas;
 
     public PlayScreen(MarioBros game) {
 
@@ -79,6 +92,10 @@ public class PlayScreen implements Screen {
 
         world.setContactListener(new WorldContactListener());
 
+        music = MarioBros.manager.get("audio/music/mario_music.ogg", Music.class);
+        music.setLooping(true);
+        music.play();
+
     }
 
     public TextureAtlas getAtlas() {
@@ -95,10 +112,7 @@ public class PlayScreen implements Screen {
 
         // call the update method and pass it the delta
         update(delta);
-//
-//        // set the view of the renderer to the camera
-//        renderer.setView(gameCam);
-//
+
         // color and alpha
         Gdx.gl.glClearColor(0, 0, 0, 1);
 
@@ -198,6 +212,7 @@ public class PlayScreen implements Screen {
         renderer.dispose();
         world.dispose();
         b2dr.dispose();
+        hud.dispose();
 
     }
 }

@@ -46,8 +46,13 @@ public class Hud implements Disposable {
         viewport = new FitViewport(MarioBros.V_WIDTH, MarioBros.V_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, sb);
 
+        // define the table for the HUD
         Table table = new Table();
+
+        // align the table to the top
         table.top();
+
+        // set the table to fill the whole stage
         table.setFillParent(true);
 
         countdownLabel = new Label(String.format("%03d", worldTimer), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
