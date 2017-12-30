@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kylenally.mariobros.MarioBros;
 import com.kylenally.mariobros.Scenes.Hud;
+import com.kylenally.mariobros.Sprites.Goomba;
 import com.kylenally.mariobros.Sprites.Mario;
 import com.kylenally.mariobros.Tools.B2WorldCreator;
 import com.kylenally.mariobros.Tools.WorldContactListener;
@@ -44,6 +45,9 @@ public class PlayScreen implements Screen {
 
     // sprites
     private Mario player;
+
+    // enemies
+    private Goomba goomba;
 
     // music variable
     private Music music;
@@ -86,15 +90,17 @@ public class PlayScreen implements Screen {
         b2dr = new Box2DDebugRenderer();
 
         // create the world
-        new B2WorldCreator(world, map);
+        new B2WorldCreator(this);
         // create Mario
-        player = new Mario(world, this);
+        player = new Mario(this);
 
         world.setContactListener(new WorldContactListener());
 
         music = MarioBros.manager.get("audio/music/mario_music.ogg", Music.class);
         music.setLooping(true);
         music.play();
+
+        goomba = new Goomba(this, .32f, .32f);
 
     }
 
@@ -128,6 +134,7 @@ public class PlayScreen implements Screen {
         game.batch.setProjectionMatrix(gameCam.combined);
         game.batch.begin();
         player.draw(game.batch);
+        goomba.draw(game.batch);
         game.batch.end();
 
         // project the hud and the stage through the camera and combine them
@@ -168,6 +175,9 @@ public class PlayScreen implements Screen {
         // update the player
         player.update(dt);
 
+        // update the enemies
+        goomba.update(dt);
+
         // update the time
         hud.update(dt);
 
@@ -180,6 +190,14 @@ public class PlayScreen implements Screen {
         // set the view of the renderer on the camera
         renderer.setView(gameCam);
 
+    }
+
+    public TiledMap getMap() {
+        return map;
+    }
+
+    public World getWorld() {
+        return  world;
     }
 
     @Override

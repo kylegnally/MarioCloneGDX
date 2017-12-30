@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.kylenally.mariobros.MarioBros;
+import com.kylenally.mariobros.Screens.PlayScreen;
 import com.kylenally.mariobros.Sprites.Brick;
 import com.kylenally.mariobros.Sprites.Coin;
 
@@ -19,7 +20,12 @@ import com.kylenally.mariobros.Sprites.Coin;
 
 public class B2WorldCreator {
 
-    public B2WorldCreator(World world, TiledMap map) {
+    public B2WorldCreator(PlayScreen screen) {
+
+        World world = screen.getWorld();
+        TiledMap map = screen.getMap();
+
+        // create body and fixture vars
         BodyDef bdef = new BodyDef();
         PolygonShape shape = new PolygonShape();
         FixtureDef fdef = new FixtureDef();
@@ -50,20 +56,21 @@ public class B2WorldCreator {
 
             shape.setAsBox(rect.getWidth() / 2 / MarioBros.PPM, rect.getHeight() / 2 / MarioBros.PPM);
             fdef.shape = shape;
+            fdef.filter.categoryBits = MarioBros.OBJECT_BIT;
             body.createFixture(fdef);
         }
 
         // create the brick bodies/fixtures
         for (MapObject object : map.getLayers().get(5).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
-            new Brick(world, map, rect);
+            new Brick(screen, rect);
         }
 
         // create the coin bodies/fixtures
         for (MapObject object : map.getLayers().get(4).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
 
-            new Coin(world, map, rect);
+            new Coin(screen, rect);
         }
     }
 }
