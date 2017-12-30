@@ -5,6 +5,8 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
+import com.kylenally.mariobros.MarioBros;
+import com.kylenally.mariobros.Sprites.Enemy;
 import com.kylenally.mariobros.Sprites.InteractiveTileObject;
 
 /**
@@ -19,6 +21,8 @@ public class WorldContactListener implements ContactListener {
         Fixture fixA = contact.getFixtureA();
         Fixture fixB = contact.getFixtureB();
 
+        int cDef = fixA.getFilterData().categoryBits | fixB.getFilterData().categoryBits;
+
         // test to see if the object is Mario's head; if it is, see if the userdata on that object is null.
         // if it is not null and the object
         if (fixA.getUserData() == "head" || fixB.getUserData() == "head") {
@@ -29,6 +33,16 @@ public class WorldContactListener implements ContactListener {
                 ((InteractiveTileObject) object.getUserData()).onHeadHit();
             }
         }
+
+        switch (cDef) {
+            case MarioBros.ENEMY_HEAD_BIT | MarioBros.MARIO_BIT:
+                if (fixA.getFilterData().categoryBits == MarioBros.ENEMY_HEAD_BIT){
+                    ((Enemy)fixA.getUserData()).hitOnHead();
+                } else if (fixB.getFilterData().categoryBits == MarioBros.ENEMY_HEAD_BIT){
+                ((Enemy)fixB.getUserData()).hitOnHead();
+            }
+        }
+
     }
 
     // called when two fixtures stop colliding
