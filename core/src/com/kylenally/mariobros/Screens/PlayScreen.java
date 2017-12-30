@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kylenally.mariobros.MarioBros;
 import com.kylenally.mariobros.Scenes.Hud;
+import com.kylenally.mariobros.Sprites.Enemy;
 import com.kylenally.mariobros.Sprites.Goomba;
 import com.kylenally.mariobros.Sprites.Mario;
 import com.kylenally.mariobros.Tools.B2WorldCreator;
@@ -46,15 +47,13 @@ public class PlayScreen implements Screen {
     // sprites
     private Mario player;
 
-    // enemies
-    private Goomba goomba;
-
     // music variable
     private Music music;
 
     // box2D vars
     private World world;
     private Box2DDebugRenderer b2dr;
+    private B2WorldCreator creator;
 
 
     public PlayScreen(MarioBros game) {
@@ -90,7 +89,7 @@ public class PlayScreen implements Screen {
         b2dr = new Box2DDebugRenderer();
 
         // create the world
-        new B2WorldCreator(this);
+        creator = new B2WorldCreator(this);
         // create Mario
         player = new Mario(this);
 
@@ -100,7 +99,6 @@ public class PlayScreen implements Screen {
         music.setLooping(true);
         music.play();
 
-        goomba = new Goomba(this, 5.64f, .32f);
 
     }
 
@@ -134,7 +132,10 @@ public class PlayScreen implements Screen {
         game.batch.setProjectionMatrix(gameCam.combined);
         game.batch.begin();
         player.draw(game.batch);
-        goomba.draw(game.batch);
+        for (Enemy enemy : creator.getGoombas()) {
+            enemy.draw(game.batch);
+        }
+
         game.batch.end();
 
         // project the hud and the stage through the camera and combine them
@@ -176,7 +177,6 @@ public class PlayScreen implements Screen {
         player.update(dt);
 
         // update the enemies
-        goomba.update(dt);
 
         // update the time
         hud.update(dt);
@@ -189,6 +189,10 @@ public class PlayScreen implements Screen {
 
         // set the view of the renderer on the camera
         renderer.setView(gameCam);
+
+        for (Enemy enemy : creator.getGoombas()) {
+            enemy.update(dt);
+        }
 
     }
 
