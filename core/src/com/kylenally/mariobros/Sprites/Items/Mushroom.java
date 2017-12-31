@@ -52,8 +52,10 @@ public class Mushroom extends Item {
     @Override
     public void update(float dt) {
         super.update(dt);
-        setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
-        velocity.y = body.getLinearVelocity().y;
-        body.setLinearVelocity(velocity);
+        if (!destroyed) {
+            setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
+            velocity.y = body.getLinearVelocity().y;
+            body.setLinearVelocity(velocity);
+        }
     }
 }

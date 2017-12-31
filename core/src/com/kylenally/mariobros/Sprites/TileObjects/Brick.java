@@ -2,6 +2,7 @@ package com.kylenally.mariobros.Sprites.TileObjects;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.math.Rectangle;
 import com.kylenally.mariobros.MarioBros;
 import com.kylenally.mariobros.Scenes.Hud;
@@ -14,9 +15,9 @@ import com.kylenally.mariobros.Sprites.TileObjects.InteractiveTileObject;
 
 public class Brick extends InteractiveTileObject {
 
-    public Brick(PlayScreen screen, Rectangle bounds) {
+    public Brick(PlayScreen screen, MapObject object) {
 
-        super(screen, bounds);
+        super(screen, object);
         fixture.setUserData(this);
         setCategoryFilter(MarioBros.BRICK_BIT);
     }
