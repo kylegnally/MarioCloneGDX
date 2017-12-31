@@ -1,4 +1,4 @@
-package com.kylenally.mariobros.Sprites;
+package com.kylenally.mariobros.Sprites.Enemies;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
@@ -25,6 +25,7 @@ public abstract class Enemy extends Sprite {
         defineEnemy();
 
         velocity = new Vector2(.5f, 0);
+        b2body.setActive(false);
     }
 
     protected abstract void defineEnemy();

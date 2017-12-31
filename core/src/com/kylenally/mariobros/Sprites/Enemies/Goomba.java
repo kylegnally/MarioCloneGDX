@@ -1,4 +1,4 @@
-package com.kylenally.mariobros.Sprites;
+package com.kylenally.mariobros.Sprites.Enemies;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.utils.Array;
 import com.kylenally.mariobros.MarioBros;
 import com.kylenally.mariobros.Screens.PlayScreen;
+import com.kylenally.mariobros.Sprites.Enemies.Enemy;
 
 /**
  * Created by kyleg on 12/30/2017.

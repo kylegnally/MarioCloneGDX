@@ -1,4 +1,4 @@
-package com.kylenally.mariobros.Sprites;
+package com.kylenally.mariobros.Sprites.TileObjects;
 
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
@@ -26,12 +26,14 @@ public abstract class InteractiveTileObject {
     protected Rectangle bounds;
     protected Body body;
     protected Fixture fixture;
+    protected PlayScreen screen;
 
     public InteractiveTileObject(PlayScreen screen, Rectangle bounds) {
 
         this.world = screen.getWorld();
         this.map = screen.getMap();
         this.bounds = bounds;
+        this.screen = screen;
 
         BodyDef bdef = new BodyDef();
         FixtureDef fdef = new FixtureDef();

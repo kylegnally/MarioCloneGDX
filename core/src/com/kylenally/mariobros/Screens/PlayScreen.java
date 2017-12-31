@@ -13,15 +13,21 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kylenally.mariobros.MarioBros;
 import com.kylenally.mariobros.Scenes.Hud;
-import com.kylenally.mariobros.Sprites.Enemy;
-import com.kylenally.mariobros.Sprites.Goomba;
+import com.kylenally.mariobros.Sprites.Enemies.Enemy;
+import com.kylenally.mariobros.Sprites.Items.Item;
+import com.kylenally.mariobros.Sprites.Items.ItemDef;
+import com.kylenally.mariobros.Sprites.Items.Mushroom;
 import com.kylenally.mariobros.Sprites.Mario;
 import com.kylenally.mariobros.Tools.B2WorldCreator;
 import com.kylenally.mariobros.Tools.WorldContactListener;
+
+import java.util.PriorityQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Created by kyleg on 12/19/2017.
@@ -55,6 +61,8 @@ public class PlayScreen implements Screen {
     private Box2DDebugRenderer b2dr;
     private B2WorldCreator creator;
 
+    private Array<Item> items;
+    private LinkedBlockingQueue<ItemDef> itemsToSpawn;
 
     public PlayScreen(MarioBros game) {
 
@@ -97,9 +105,26 @@ public class PlayScreen implements Screen {
 
         music = MarioBros.manager.get("audio/music/mario_music.ogg", Music.class);
         music.setLooping(true);
-        music.play();
 
+        // uncomment to play the music
+        //music.play();
 
+        items = new Array<Item>();
+        itemsToSpawn = new LinkedBlockingQueue<ItemDef>();
+
+    }
+
+    public void spawnItem(ItemDef idef) {
+        itemsToSpawn.add(idef);
+    }
+
+    public void handleSpawningItems() {
+        if (!itemsToSpawn.isEmpty()) {
+            ItemDef idef = itemsToSpawn.poll();
+            if (idef.type == Mushroom.class) {
+                items.add(new Mushroom(this, idef.position.x, idef.position.y));
+            }
+        }
     }
 
     public TextureAtlas getAtlas() {
@@ -136,6 +161,10 @@ public class PlayScreen implements Screen {
             enemy.draw(game.batch);
         }
 
+        for (Item item : items) {
+            item.draw(game.batch);
+        }
+
         game.batch.end();
 
         // project the hud and the stage through the camera and combine them
@@ -169,6 +198,7 @@ public class PlayScreen implements Screen {
     public void update(float dt) {
 
         handleInput(dt);
+        handleSpawningItems();
 
         // these control CPU/physics updating per screen update
         world.step(1/60f, 6, 2);
@@ -192,6 +222,13 @@ public class PlayScreen implements Screen {
 
         for (Enemy enemy : creator.getGoombas()) {
             enemy.update(dt);
+            if (enemy.getX() < player.getX() + 224 / MarioBros.PPM) {
+                enemy.b2body.setActive(true);
+            }
+        }
+
+        for (Item item : items) {
+            item.update(dt);
         }
 
     }

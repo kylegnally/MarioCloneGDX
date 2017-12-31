@@ -1,13 +1,12 @@
-package com.kylenally.mariobros.Sprites;
+package com.kylenally.mariobros.Sprites.TileObjects;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.physics.box2d.World;
 import com.kylenally.mariobros.MarioBros;
 import com.kylenally.mariobros.Scenes.Hud;
 import com.kylenally.mariobros.Screens.PlayScreen;
+import com.kylenally.mariobros.Sprites.TileObjects.InteractiveTileObject;
 
 /**
  * Created by kyleg on 12/23/2017.
