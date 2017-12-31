@@ -8,6 +8,8 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.kylenally.mariobros.MarioBros;
 import com.kylenally.mariobros.Sprites.Enemies.Enemy;
+import com.kylenally.mariobros.Sprites.Items.Item;
+import com.kylenally.mariobros.Sprites.Mario;
 import com.kylenally.mariobros.Sprites.TileObjects.InteractiveTileObject;
 
 /**
@@ -35,6 +37,7 @@ public class WorldContactListener implements ContactListener {
             }
         }
 
+        // check if things | collide with things
         switch (cDef) {
             case MarioBros.ENEMY_HEAD_BIT | MarioBros.MARIO_BIT:
                 if (fixA.getFilterData().categoryBits == MarioBros.ENEMY_HEAD_BIT){
@@ -56,9 +59,25 @@ public class WorldContactListener implements ContactListener {
                 Gdx.app.log("MARIO", "DIED");
                 break;
 
-            case (MarioBros.ENEMY_BIT | MarioBros.ENEMY_BIT):
+            case MarioBros.ENEMY_BIT | MarioBros.ENEMY_BIT:
                 ((Enemy)fixA.getUserData()).reverseVelocity(true, false);
                 ((Enemy)fixB.getUserData()).reverseVelocity(true, false);
+                break;
+
+            case MarioBros.ITEM_BIT | MarioBros.OBJECT_BIT:
+                if (fixA.getFilterData().categoryBits == MarioBros.ITEM_BIT){
+                    ((Item)fixA.getUserData()).reverseVelocity(true, false);
+                } else {
+                    ((Item)fixB.getUserData()).reverseVelocity(true, false);
+                }
+                break;
+
+            case MarioBros.ITEM_BIT | MarioBros.MARIO_BIT:
+                if (fixA.getFilterData().categoryBits == MarioBros.ITEM_BIT){
+                    ((Item)fixA.getUserData()).use((Mario) fixB.getUserData());
+                } else {
+                    ((Item)fixB.getUserData()).use((Mario) fixA.getUserData());
+                }
                 break;
         }
     }
