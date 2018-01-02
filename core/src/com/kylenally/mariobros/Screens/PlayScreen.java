@@ -180,18 +180,20 @@ public class PlayScreen implements Screen {
 
         // check for key presses and apply a linear impulse. .isKeyJustPressed
         // allows us to have a jump that's NOT flying (ie constant velocity)
-        if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
-            player.b2Body.applyLinearImpulse(new Vector2(0, 4f), player.b2Body.getWorldCenter(), true);
-        }
+        if (player.currentState != Mario.State.DEAD) {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+                player.b2Body.applyLinearImpulse(new Vector2(0, 4f), player.b2Body.getWorldCenter(), true);
+            }
 
-        // the next two look for a key that is being held down and applies the motion during the
-        // time the player holds the key (yes, you can use DPAD here as well)
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2Body.getLinearVelocity().x <= 2) {
-            player.b2Body.applyLinearImpulse(new Vector2(0.1f, 0), player.b2Body.getWorldCenter(), true);
-        }
+            // the next two look for a key that is being held down and applies the motion during the
+            // time the player holds the key (yes, you can use DPAD here as well)
+            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2Body.getLinearVelocity().x <= 2) {
+                player.b2Body.applyLinearImpulse(new Vector2(0.1f, 0), player.b2Body.getWorldCenter(), true);
+            }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2Body.getLinearVelocity().x >= -2) {
-            player.b2Body.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2Body.getWorldCenter(), true);
+            if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2Body.getLinearVelocity().x >= -2) {
+                player.b2Body.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2Body.getWorldCenter(), true);
+            }
         }
     }
 
@@ -205,6 +207,12 @@ public class PlayScreen implements Screen {
 
         // update the player
         player.update(dt);
+        for (Enemy enemy : creator.getGoombas()) {
+            enemy.update(dt);
+            if (enemy.getX() < player.getX() + 224 / MarioBros.PPM) {
+                enemy.b2body.setActive(true);
+            }
+        }
 
         // update the enemies
 
@@ -212,7 +220,9 @@ public class PlayScreen implements Screen {
         hud.update(dt);
 
         // set the camera to the position of the player
-        gameCam.position.x = player.b2Body.getPosition().x;
+        if (player.currentState != Mario.State.DEAD) {
+            gameCam.position.x = player.b2Body.getPosition().x;
+        }
 
         // update the camera
         gameCam.update();
