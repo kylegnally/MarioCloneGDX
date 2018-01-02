@@ -11,6 +11,7 @@ import com.kylenally.mariobros.Scenes.Hud;
 import com.kylenally.mariobros.Screens.PlayScreen;
 import com.kylenally.mariobros.Sprites.Items.ItemDef;
 import com.kylenally.mariobros.Sprites.Items.Mushroom;
+import com.kylenally.mariobros.Sprites.Mario;
 import com.kylenally.mariobros.Sprites.TileObjects.InteractiveTileObject;
 
 
@@ -33,7 +34,7 @@ public class Coin extends InteractiveTileObject {
     }
 
     @Override
-    public void onHeadHit() {
+    public void onHeadHit(Mario mario) {
         Gdx.app.log("Coin", "Collision");
         if (getCell().getTile().getId() == BLANK_COIN)
         {
